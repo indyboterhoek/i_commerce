@@ -5,7 +5,7 @@ class Product(models.Model):
 	name = models.CharField(max_length=100)
 	price = models.IntegerField()
 	description = models.TextField()
-	image = models.ImageField(upload_to='images/')
+	image = models.ImageField(upload_to='')
 	images = models.ManyToManyField('OptionImage', blank=True)
 	stock = models.IntegerField()
 	created_at = models.DateTimeField(auto_now_add=True)

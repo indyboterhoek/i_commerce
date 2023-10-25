@@ -1,12 +1,13 @@
-import React from "react";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Input, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
 
 export default function NavbarMenu() {
 	return (
 		<Navbar isBordered>
 			<NavbarContent justify="start">
-				<NavbarBrand className="mr-4">
-					<img src="src/assets/logo.png" />
+				<NavbarBrand className="mr-4 hover" onClick={() => {
+					window.location.href = "/";
+				}}>
+					<img src="../../public/logo.png" />
 				</NavbarBrand>
 				<NavbarContent className="hidden sm:flex gap-3">
 					<NavbarItem>

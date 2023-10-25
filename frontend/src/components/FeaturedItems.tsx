@@ -1,41 +1,63 @@
-import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
+import { Card, CardBody, CardFooter } from "@nextui-org/react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+type FeaturedItem = {
+	name: string,
+	image: string,
+	price: number,
+	sale?: number,
+}
 
 export default function FeaturedItems() {
-	const list = [
-		{
-			title: "Orange",
-			img: "/images/fruit-1.jpeg",
-			price: "$5.50",
-		},
-		{
-			title: "Tangerine",
-			img: "/images/fruit-2.jpeg",
-			price: "$3.00",
-		},
-		{
-			title: "Raspberry",
-			img: "/images/fruit-3.jpeg",
-			price: "$10.00",
-		},
-	];
+	const [featuredList, setFeaturedList] = useState<FeaturedItem[]>([]);
+	const [selected, setSelected] = useState(0);
+	const [isLoaded, setIsLoaded] = useState(false);
+
+	useEffect(() => {
+		async function fetchData() {
+			try {
+				const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/product/home`)
+				console.log(response.data)
+				const data = response.data.slice(0, 3)
+				setFeaturedList(data)
+				setIsLoaded(true)
+			}
+			catch (error) {
+				console.error(error)
+			}
+		}
+		fetchData()
+	}, [])
 
 	return (
-		<div className="gap-2 grid grid-cols-2 sm:grid-cols-4 justify-center">
-			{list.map((item, index) => (
-				<Card shadow="sm" key={index} isPressable onPress={() => console.log("item pressed")}>
-					<CardBody className="overflow-visible p-0">
-						<Image
-							shadow="sm"
-							radius="lg"
-							width="100%"
-							alt={item.title}
-							className="w-full object-cover h-[140px]"
-							src={item.img}
-						/>
+		<div className="flex gap-2 h-full">
+			{!isLoaded ? <Card shadow="sm" className={"row-span-2"} key={0} isPressable onMouseEnter={() => {
+				setSelected(0);
+			}} onPress={() => console.log("item pressed")}>
+				<CardBody className={`featured-card p-1 h-[510px] w-[510px]`} style={{
+					"backgroundImage": ``,
+					"backgroundSize": "cover",
+				}}>
+				</CardBody>
+				<CardFooter className="text-small justify-between">
+					<b>Loading...</b>
+					<p className={`text-default-500`}>$0</p>
+				</CardFooter>
+			</Card> : null}
+			{featuredList.map((item, index) => (
+				<Card shadow="sm" className={index == selected ? "row-span-2" : ""} key={index} isPressable onMouseEnter={() => {
+					setSelected(index);
+				}} onPress={() => console.log("item pressed")}>
+					<CardBody className={`featured-card p-1 bg-white h-[510px] ${index == selected ? "w-[510px]" : "w-[200px]"}`} style={{
+						"backgroundImage": `url(${import.meta.env.VITE_API_URL}${item.image})`,
+						"backgroundSize": "cover",
+					}}>
 					</CardBody>
 					<CardFooter className="text-small justify-between">
-						<b>{item.title}</b>
-						<p className="text-default-500">{item.price}</p>
+						<b>{item.name}</b>
+						<p className={`text-default-500 ${item.sale ? "line-through" : ""}`}>${item.price}</p>
+						{item.sale ? <p className="text-default-500">${item.sale}</p> : null}
 					</CardFooter>
 				</Card>
 			))}
