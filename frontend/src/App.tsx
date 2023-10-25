@@ -1,30 +1,19 @@
-import { useEffect, useState } from 'react'
 import './App.css'
-import axios from 'axios'
 import NavbarMenu from './components/NavbarMenu'
-import { Spinner } from "@nextui-org/react";
-import FeaturedItems from './components/FeaturedItems';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+import NotFound from './pages/NotFound'
 
 function App() {
-	const [data, setData] = useState<any>([])
-
-	useEffect(() => {
-		async function fetchData() {
-			try {
-				const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/product/home`)
-				console.log(response.data)
-			}
-			catch (error) {
-				console.error(error)
-			}
-		}
-		fetchData()
-	}, [])
-
 	return (
-		<div className='app dark text-foreground bg-background'>
+		<div className='app dark text-foreground bg-background h-full'>
 			<NavbarMenu />
-			<FeaturedItems />
+			<BrowserRouter>
+				<Routes>
+					<Route path="*" element={<NotFound />} />
+					<Route path="/" element={<HomePage />} />
+				</Routes>
+			</BrowserRouter>
 		</div>
 	)
 }
